@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"gopl.io/ch4/github"
@@ -23,13 +24,34 @@ func main() {
 	monthAgo := today.AddDate(0, -1, 0)
 	yearAgo := today.AddDate(-1, 0, 0)
 
+	fmt.Println(today.Date())
 	fmt.Println(monthAgo)
 	fmt.Println(yearAgo)
-	fmt.Println(os.Args[1:])
-	os.Args = append(os.Args, "created:>2016-07-05") // Not sure I like this
 
-	monthlyResult, err := github.SearchIssues("something string")
-	yearlyResult, err := github.SearchIussues("something lese ")
+	fmt.Println("lets handle the string")
+	//2016-08-12 04:06:42.103418624 +0000 UTC
+	fmt.Println(strings.SplitAfterN(monthAgo.String(), " ", 3)[0])
+	//fmt.Println(os.Args[1:])
+	//os.Args = append(os.Args, "created:<"+yearAgo.String()) // Not sure I like this
+
+	lMonthQuery := os.Args
+	lYearQuery := os.Args
+	mYearQuery := os.Args
+
+	lMonthQuery = append(lMonthQuery, "created:>"+strings.SplitAfterN(monthAgo.String(), " ", 3)[0]) // less then a monthQuery
+	lYearQuery = append(lYearQuery, "created:>"+strings.SplitAfterN(yearAgo.String(), " ", 3)[0])    // less then a year
+	mYearQuery = append(mYearQuery, "created:<"+strings.SplitAfterN(yearAgo.String(), " ", 3)[0])    // more then a year ago
+
+	fmt.Println(lMonthQuery)
+	fmt.Println(lYearQuery)
+	fmt.Println(mYearQuery)
+
+	/*monthlyResult, err := github.SearchIssues("something string")
+	if err != nil {
+		log.Fatal(err)
+	}
+	*/
+	//yearlyResult, err := github.SearchIussues("something lese ")
 	result, err := github.SearchIssues(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
